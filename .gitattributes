@@ -1,0 +1,15 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.exr binary
+*.hdr binary
+*.glb binary
+*.wav binary
+*.ogg binary
+*.ttf binary
+*.so binary
+*.dll binary
+*.dylib binary

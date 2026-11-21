@@ -1,0 +1,21 @@
+# Godot 4
+.godot/
+*.translation
+export.cfg
+export_credentials.cfg
+/android/
+
+# Builds
+/build/
+/export/
+
+# Local saves and test worlds
+/saves/
+*.sqlite
+*.sqlite-journal
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.tmp
