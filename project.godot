@@ -9,6 +9,11 @@ config/name="Farshore"
 config/description="Cozy co-op sandbox on a distant shore."
 run/main_scene="res://scenes/main.tscn"
 
+[autoload]
+
+InputSetup="*res://scripts/autoload/input_setup.gd"
+Permissions="*res://scripts/autoload/permissions.gd"
+
 [rendering]
 
 anti_aliasing/quality/msaa_3d=2

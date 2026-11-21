@@ -1,16 +1,69 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scripts/world/world.gd" id="1_world"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+
 [sub_resource type="Environment" id="Environment_main"]
 background_mode = 1
 background_color = Color(0.55, 0.62, 0.66, 1)
 ambient_light_source = 2
 ambient_light_color = Color(0.7, 0.72, 0.75, 1)
+fog_enabled = true
+fog_light_color = Color(0.62, 0.68, 0.72, 1)
+fog_density = 0.006
 
-[node name="Main" type="Node3D"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_terrain"]
+frequency = 0.005
+fractal_octaves = 4
+
+[sub_resource type="VoxelGeneratorNoise2D" id="VoxelGeneratorNoise2D_terrain"]
+noise = SubResource("FastNoiseLite_terrain")
+height_start = -10.0
+height_range = 50.0
+
+[sub_resource type="VoxelMesherTransvoxel" id="VoxelMesherTransvoxel_terrain"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_terrain"]
+albedo_color = Color(0.56, 0.6, 0.5, 1)
+roughness = 1.0
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_world")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_main")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 10, 0)
+transform = Transform3D(1, 0, 0, 0, 0.5, -0.866025, 0, 0.866025, 0.5, 0, 50, 0)
 shadow_enabled = true
+
+[node name="VoxelTerrain" type="VoxelTerrain" parent="."]
+generator = SubResource("VoxelGeneratorNoise2D_terrain")
+mesher = SubResource("VoxelMesherTransvoxel_terrain")
+material_override = SubResource("StandardMaterial3D_terrain")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 60, 0)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Crosshair" type="Label" parent="HUD"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.0
+offset_top = -14.0
+offset_right = 10.0
+offset_bottom = 14.0
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Controls" type="Label" parent="HUD"]
+offset_left = 12.0
+offset_top = 10.0
+offset_right = 600.0
+offset_bottom = 36.0
+text = "WASD move   Shift sprint   Space jump   LMB dig   RMB fill   Esc free mouse"

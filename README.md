@@ -20,15 +20,23 @@ Pinned versions: **Godot 4.7 with Voxel Tools 1.7**, using the prebuilt editor t
 
 The GDExtension build exists too, but its author notes it hasn't had much testing. Stick with the module build unless there's a reason to switch.
 
+## Controls
+
+Keyboard/mouse: WASD move, Shift sprint, Space jump, left click dig, right click fill, Esc frees the mouse (click to recapture).
+
+Gamepad: left stick move, right stick look, A jump, left stick click sprint, right trigger dig, left trigger fill.
+
+Dig and fill run through `World.request_terrain_edit()` and the `Permissions.can()` gate, the same path a networked client will use. Local dig/fill works now; syncing it to a second player is the next task.
+
 ## Phase 0 checklist
 
 - [x] Pick a working title (Farshore)
 - [x] Create the Git repository and Godot 4 project
 - [ ] Install Godot 4.7 + Voxel Tools 1.7 and open the project
-- [ ] First-person controller walking on smooth voxel terrain
+- [x] First-person controller walking on smooth voxel terrain (written, needs a test on a real machine)
 - [ ] Dig and fill terrain, synced between a host and one client
 - [ ] Place and remove 3 build pieces on a grid, synced
-- [ ] `can()` permission gate stub with Owner and Visitor roles
+- [x] `can()` permission gate stub with Owner and Visitor roles
 - [ ] Day/night cycle
 
 Goal: a networked gray box with two players digging and building together, no art. If that isn't fun, nothing later will fix it.

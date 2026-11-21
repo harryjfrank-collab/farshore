@@ -100,7 +100,7 @@ A client asks to dig or take an item; the permission gate allows or refuses it, 
 
 - No trust in clients. Inventory, position checks, and block changes are all validated on the server. This blocks most cheating and is what makes container limits enforceable.
 - Hosting. Players host from the main menu (listen server) or run a headless dedicated server on Windows, Linux or Mac.
-- Sync. Voxel edits are sent as small deltas; godot_voxel streams terrain blocks to each client around their position. Farming and creatures run only on the server.
+- Sync. Voxel edits are sent as small deltas; godot_voxel's `VoxelTerrainMultiplayerSynchronizer` streams terrain blocks from the server to each client around their position. Farming and creatures run only on the server.
 - Cost for a solo developer. Building this in from day one adds roughly 30–50% to early prototype time, but retrofitting it later would mean rewriting most systems.
 
 ## Admin and permissions
@@ -144,10 +144,12 @@ The stack is Godot 4 with GDScript, the godot_voxel extension for terrain, and S
 |---|---|---|
 | Engine | Godot 4 (MIT) | Free, no royalties, fast iteration for a solo developer |
 | Language | GDScript; C++ only if profiling demands it | Fastest to write; avoids C# console-export gaps |
-| Terrain | godot_voxel (smooth/Transvoxel mode) | Diggable smooth terrain, LOD, streaming, built-in multiplayer terrain sync helpers |
+| Terrain | godot_voxel `VoxelTerrain` with `VoxelMesherTransvoxel` (smooth) | Diggable smooth terrain, streaming, built-in multiplayer sync (`VoxelTerrainMultiplayerSynchronizer`). No LOD: see note below |
 | Networking | Godot high-level multiplayer (ENet) for LAN/direct; Steam relay via GodotSteam for invites and NAT traversal | Same game code; transport is swappable |
 | Saves | Voxel regions in the module's own format; game state (inventories, claims, permissions, audit log) in SQLite | Audit log and rollback need real queries |
 | Art | CC0 textures and models (Poly Haven, ambientCG) first; commission or buy packs later | A solo developer can't model a whole world |
+
+Terrain LOD vs multiplayer (checked Nov 21, 2026 against godot_voxel docs). The module's multiplayer sync only supports `VoxelTerrain`; `VoxelLodTerrain` has no multiplayer support yet (planned upstream). So v1 uses `VoxelTerrain`: smooth terrain without LOD, which caps view distance (128 voxels by default). Fog and a finite world help hide it. Revisit if upstream adds LOD sync.
 
 Platforms.
 
