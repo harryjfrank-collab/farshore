@@ -11,17 +11,20 @@ Built with Godot 4, GDScript and godot_voxel.
 
 ## Setup
 
-1. Install the current stable Godot 4 editor (standard build, not .NET).
-2. Install godot_voxel. Either use a Godot editor build that includes the voxel module, or add the GDExtension build under `addons/zylann.voxel/`. Check the godot_voxel docs for which option matches your Godot version.
-3. Open `project.godot` in the editor.
+Pinned versions: **Godot 4.7 with Voxel Tools 1.7**, using the prebuilt editor that has the voxel module compiled in.
 
-Version details in the spec were written from memory; check them against current docs before relying on them.
+1. Download the editor for your platform from https://github.com/Zylann/godot_voxel/releases (the "Godot 4.7.x + Voxel Tools 1.7" release, not the GDExtension one).
+2. Unzip it anywhere and run it. On macOS the build is unsigned: right-click the app and choose Open the first time.
+3. In the Project Manager, choose Import and select this repo's `project.godot`.
+4. Check Help > About shows a 4.7 custom build. If the Voxel nodes (VoxelLodTerrain, VoxelTerrain) appear in Add Node, the module is working.
+
+The GDExtension build exists too, but its author notes it hasn't had much testing. Stick with the module build unless there's a reason to switch.
 
 ## Phase 0 checklist
 
 - [x] Pick a working title (Farshore)
 - [x] Create the Git repository and Godot 4 project
-- [ ] Add godot_voxel
+- [ ] Install Godot 4.7 + Voxel Tools 1.7 and open the project
 - [ ] First-person controller walking on smooth voxel terrain
 - [ ] Dig and fill terrain, synced between a host and one client
 - [ ] Place and remove 3 build pieces on a grid, synced
