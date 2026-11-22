@@ -25,6 +25,7 @@ func _enter_tree() -> void:
 	_add(&"fly_toggle", [_key(KEY_F), _button(JOY_BUTTON_BACK)])
 	_add(&"fly_down", [_key(KEY_CTRL), _key(KEY_C), _button(JOY_BUTTON_B)])
 	_add(&"reseed", [_key(KEY_F5)])
+	_add(&"time_skip", [_key(KEY_T), _button(JOY_BUTTON_DPAD_RIGHT)])
 
 
 func _add(action: StringName, events: Array, deadzone := 0.2) -> void:

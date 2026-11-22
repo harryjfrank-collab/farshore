@@ -4,15 +4,26 @@
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="VoxelGeneratorGraph" path="res://world/island_generator.tres" id="3_island"]
 [ext_resource type="Shader" path="res://shaders/terrain_debug.gdshader" id="4_terrain_shader"]
+[ext_resource type="Script" path="res://scripts/world/day_night_cycle.gd" id="5_day_night"]
+[ext_resource type="Resource" path="res://world/day_night.tres" id="6_day_night_settings"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_main"]
+sun_angle_max = 20.0
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("ProceduralSkyMaterial_main")
 
 [sub_resource type="Environment" id="Environment_main"]
-background_mode = 1
-background_color = Color(0.55, 0.62, 0.66, 1)
-ambient_light_source = 2
-ambient_light_color = Color(0.7, 0.72, 0.75, 1)
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 4
 fog_enabled = true
 fog_light_color = Color(0.62, 0.68, 0.72, 1)
+fog_sun_scatter = 0.2
 fog_density = 0.006
+fog_sky_affect = 0.25
 
 [sub_resource type="VoxelMesherTransvoxel" id="VoxelMesherTransvoxel_terrain"]
 
@@ -37,6 +48,18 @@ environment = SubResource("Environment_main")
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, -0.866025, 0, 0.866025, 0.5, 0, 50, 0)
 shadow_enabled = true
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 50, 0)
+light_color = Color(0.6, 0.7, 1, 1)
+light_energy = 0.2
+
+[node name="DayNight" type="Node" parent="." node_paths=PackedStringArray("sun", "moon", "world_environment")]
+script = ExtResource("5_day_night")
+settings = ExtResource("6_day_night_settings")
+sun = NodePath("../Sun")
+moon = NodePath("../Moon")
+world_environment = NodePath("../WorldEnvironment")
 
 [node name="VoxelTerrain" type="VoxelTerrain" parent="."]
 generator = ExtResource("3_island")
@@ -73,15 +96,15 @@ offset_left = 12.0
 offset_top = 10.0
 offset_right = 900.0
 offset_bottom = 36.0
-text = "WASD move   Shift sprint   Space jump   LMB dig   RMB fill   Esc free mouse   F fly (Ctrl down)   F5 new island"
+text = "WASD move   Shift sprint   Space jump   LMB dig   RMB fill   Esc free mouse   F fly (Ctrl down)   F5 new island   T +1 hour"
 
 [node name="SeedLabel" type="Label" parent="HUD"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -240.0
-offset_top = 10.0
+offset_top = 38.0
 offset_right = -12.0
-offset_bottom = 36.0
+offset_bottom = 90.0
 grow_horizontal = 0
 horizontal_alignment = 2

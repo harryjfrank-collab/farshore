@@ -15,6 +15,7 @@ const EDIT_RADIUS := 1.8
 const PLAYER_CLEARANCE := 0.5  # keep fills from burying a player
 const SPAWN_DROP_HEIGHT := 20.0  # spawn this far above the beach, then fall
 const FLY_FOG_SCALE := 0.3  # thinner fog while surveying in fly mode
+const HOUR := 1.0 / 24.0
 
 ## One integer drives the whole island. F5 picks a new random one.
 @export var world_seed := 1
@@ -25,11 +26,10 @@ const FLY_FOG_SCALE := 0.3  # thinner fog while surveying in fly mode
 static var _seed_override := -1
 
 var island: IslandGenerator
-var _base_fog_density := 0.0
 
 @onready var terrain: VoxelTerrain = $VoxelTerrain
 @onready var ocean: MeshInstance3D = $Ocean
-@onready var environment: Environment = $WorldEnvironment.environment
+@onready var day_night: Node = $DayNight
 @onready var player: CharacterBody3D = $Player
 @onready var seed_label: Label = $HUD/SeedLabel
 
@@ -38,12 +38,10 @@ func _ready() -> void:
 	if _seed_override >= 0:
 		world_seed = _seed_override
 	print("[World] Seed %d" % world_seed)
-	seed_label.text = "Seed %d" % world_seed
 
 	island = IslandGenerator.new(world_seed)
 	_setup_terrain()
 	_setup_ocean()
-	_base_fog_density = environment.fog_density
 
 	var spawn := island.find_spawn_beach()
 	var p: Vector3 = spawn.position
@@ -62,8 +60,16 @@ func _ready() -> void:
 	player.place_for_spawn(p + Vector3.UP * SPAWN_DROP_HEIGHT, spawn.facing)
 
 
+func _process(_delta: float) -> void:
+	seed_label.text = "Seed %d\n%s" % [world_seed, WorldClock.clock_text()]
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"reseed"):
+	if event.is_action_pressed(&"time_skip"):
+		# Debug: jump an hour. On a server this becomes an admin command.
+		WorldClock.advance(HOUR)
+		print("[World] T: time is now %s" % WorldClock.clock_text())
+	elif event.is_action_pressed(&"reseed"):
 		_seed_override = randi() % 1_000_000
 		print("[World] F5: reloading with new seed %d" % _seed_override)
 		get_tree().reload_current_scene()
@@ -88,7 +94,7 @@ func _setup_ocean() -> void:
 
 
 func _on_fly_mode_changed(flying: bool) -> void:
-	environment.fog_density = _base_fog_density * (FLY_FOG_SCALE if flying else 1.0)
+	day_night.fog_scale = FLY_FOG_SCALE if flying else 1.0
 
 
 ## Generated surface height (ignores edits). Used to lift the player out of the
