@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" path="res://scripts/world/world.gd" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="VoxelGeneratorGraph" path="res://world/island_generator.tres" id="3_island"]
+[ext_resource type="Shader" path="res://shaders/terrain_debug.gdshader" id="4_terrain_shader"]
 
 [sub_resource type="Environment" id="Environment_main"]
 background_mode = 1
@@ -12,20 +14,19 @@ fog_enabled = true
 fog_light_color = Color(0.62, 0.68, 0.72, 1)
 fog_density = 0.006
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_terrain"]
-frequency = 0.005
-fractal_octaves = 4
-
-[sub_resource type="VoxelGeneratorNoise2D" id="VoxelGeneratorNoise2D_terrain"]
-noise = SubResource("FastNoiseLite_terrain")
-height_start = -10.0
-height_range = 50.0
-
 [sub_resource type="VoxelMesherTransvoxel" id="VoxelMesherTransvoxel_terrain"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_terrain"]
-albedo_color = Color(0.56, 0.6, 0.5, 1)
-roughness = 1.0
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_terrain"]
+shader = ExtResource("4_terrain_shader")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ocean"]
+size = Vector2(8000, 8000)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ocean"]
+transparency = 1
+albedo_color = Color(0.13, 0.34, 0.52, 0.85)
+metallic_specular = 0.6
+roughness = 0.15
 
 [node name="World" type="Node3D"]
 script = ExtResource("1_world")
@@ -38,9 +39,15 @@ transform = Transform3D(1, 0, 0, 0, 0.5, -0.866025, 0, 0.866025, 0.5, 0, 50, 0)
 shadow_enabled = true
 
 [node name="VoxelTerrain" type="VoxelTerrain" parent="."]
-generator = SubResource("VoxelGeneratorNoise2D_terrain")
+generator = ExtResource("3_island")
 mesher = SubResource("VoxelMesherTransvoxel_terrain")
-material_override = SubResource("StandardMaterial3D_terrain")
+max_view_distance = 512
+material_override = SubResource("ShaderMaterial_terrain")
+
+[node name="Ocean" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_ocean")
+surface_material_override/0 = SubResource("StandardMaterial3D_ocean")
+cast_shadow = 0
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 60, 0)
@@ -64,6 +71,17 @@ vertical_alignment = 1
 [node name="Controls" type="Label" parent="HUD"]
 offset_left = 12.0
 offset_top = 10.0
-offset_right = 600.0
+offset_right = 900.0
 offset_bottom = 36.0
-text = "WASD move   Shift sprint   Space jump   LMB dig   RMB fill   Esc free mouse"
+text = "WASD move   Shift sprint   Space jump   LMB dig   RMB fill   Esc free mouse   F fly (Ctrl down)   F5 new island"
+
+[node name="SeedLabel" type="Label" parent="HUD"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -240.0
+offset_top = 10.0
+offset_right = -12.0
+offset_bottom = 36.0
+grow_horizontal = 0
+horizontal_alignment = 2

@@ -21,6 +21,11 @@ func _enter_tree() -> void:
 	_add(&"dig", [_mouse(MOUSE_BUTTON_LEFT), _axis(JOY_AXIS_TRIGGER_RIGHT, 1.0)])
 	_add(&"fill", [_mouse(MOUSE_BUTTON_RIGHT), _axis(JOY_AXIS_TRIGGER_LEFT, 1.0)])
 
+	# Debug tools.
+	_add(&"fly_toggle", [_key(KEY_F), _button(JOY_BUTTON_BACK)])
+	_add(&"fly_down", [_key(KEY_CTRL), _key(KEY_C), _button(JOY_BUTTON_B)])
+	_add(&"reseed", [_key(KEY_F5)])
+
 
 func _add(action: StringName, events: Array, deadzone := 0.2) -> void:
 	if InputMap.has_action(action):
