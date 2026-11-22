@@ -1,6 +1,9 @@
 extends CharacterBody3D
 ## First-person controller: mouse/keyboard and gamepad.
 ## Terrain edits are sent to the world as intents; the player never touches voxels itself.
+## F toggles a debug free-fly camera for surveying islands.
+
+signal fly_mode_changed(flying: bool)
 
 @export var walk_speed := 5.0
 @export var sprint_speed := 8.5
@@ -10,17 +13,24 @@ extends CharacterBody3D
 @export var reach := 6.0
 @export var edit_interval := 0.15  # seconds between edits while held
 @export var spawn_timeout := 10.0  # give up waiting for terrain after this long
+@export var fly_speed := 30.0
+@export var fly_sprint_speed := 120.0
+@export var fly_view_distance := 256  # voxels; walking uses the VoxelViewer's own setting
 
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
+@onready var collision: CollisionShape3D = $CollisionShape3D
+@onready var viewer: VoxelViewer = $VoxelViewer
 
 var world: Node3D
 var terrain: VoxelTerrain
 var peer_id := 1
+var flying := false
 
 var _spawned := false
 var _spawn_wait := 0.0
 var _edit_cooldown := 0.0
+var _walk_view_distance := 128
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 
@@ -32,12 +42,27 @@ func setup(p_world: Node3D, p_terrain: VoxelTerrain, p_peer_id: int) -> void:
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_walk_view_distance = viewer.view_distance
+
+
+## Put the player at pos (in the air), facing along facing, then wait for the
+## terrain below to mesh and drop onto it.
+func place_for_spawn(pos: Vector3, facing: Vector3) -> void:
+	global_position = pos
+	if facing.length_squared() > 0.0:
+		rotation.y = atan2(-facing.x, -facing.z)  # forward is -Z
+	head.rotation.x = 0.0
+	velocity = Vector3.ZERO
+	_spawned = false
+	_spawn_wait = 0.0
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		var motion := event as InputEventMouseMotion
 		_look(-motion.relative.x * mouse_sensitivity, -motion.relative.y * mouse_sensitivity)
+	elif event.is_action_pressed(&"fly_toggle"):
+		_set_flying(not flying)
 	elif event.is_action_pressed(&"ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	elif event is InputEventMouseButton and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
@@ -47,13 +72,17 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if not _spawned:
-		_try_spawn(delta)
-		return
-
 	var look := Input.get_vector(&"look_left", &"look_right", &"look_up", &"look_down")
 	if look != Vector2.ZERO:
 		_look(-look.x * stick_sensitivity * delta, -look.y * stick_sensitivity * delta)
+
+	if flying:
+		_fly(delta)
+		_handle_edits(delta)
+		return
+	if not _spawned:
+		_try_spawn(delta)
+		return
 
 	if not is_on_floor():
 		velocity.y -= _gravity * delta
@@ -66,13 +95,48 @@ func _physics_process(delta: float) -> void:
 	velocity.x = direction.x * speed
 	velocity.z = direction.z * speed
 	move_and_slide()
+	_handle_edits(delta)
 
+
+func _handle_edits(delta: float) -> void:
 	_edit_cooldown -= delta
 	if _edit_cooldown <= 0.0 and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		if Input.is_action_pressed(&"dig"):
 			_request_edit(&"dig")
 		elif Input.is_action_pressed(&"fill"):
 			_request_edit(&"fill")
+
+
+func _set_flying(on: bool) -> void:
+	flying = on
+	collision.disabled = on
+	viewer.view_distance = fly_view_distance if on else _walk_view_distance
+	velocity = Vector3.ZERO
+	if not on:
+		# Make sure we are above the generated ground, then reuse the spawn logic
+		# to wait for terrain under us and drop onto it.
+		if world.has_method(&"surface_height_hint"):
+			var ground: float = world.surface_height_hint(global_position.x, global_position.z)
+			global_position.y = maxf(global_position.y, ground + 2.0)
+		_spawned = false
+		_spawn_wait = 0.0
+	fly_mode_changed.emit(on)
+
+
+## Noclip flight along the camera direction. Jump rises, fly_down sinks.
+func _fly(delta: float) -> void:
+	var input := Input.get_vector(&"move_left", &"move_right", &"move_forward", &"move_back")
+	var direction := camera.global_basis * Vector3(input.x, 0.0, input.y)
+	if Input.is_action_pressed(&"jump"):
+		direction += Vector3.UP
+	if Input.is_action_pressed(&"fly_down"):
+		direction += Vector3.DOWN
+	if direction.length_squared() > 1.0:
+		direction = direction.normalized()
+	var speed := fly_sprint_speed if Input.is_action_pressed(&"sprint") else fly_speed
+	var p := global_position + direction * speed * delta
+	p.y = clampf(p.y, -60.0, 400.0)
+	global_position = p
 
 
 func _look(yaw: float, pitch: float) -> void:
