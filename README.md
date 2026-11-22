@@ -27,7 +27,13 @@ Keyboard/mouse: WASD move, Shift sprint, Space jump, left click dig, right click
 
 Gamepad: left stick move, right stick look, A jump, left stick click sprint, right trigger dig, left trigger fill.
 
-Debug: F (gamepad Back) toggles a free-fly camera (Space up, Ctrl or C or gamepad B down, Shift fast). F5 reloads with a new random island seed and prints it to the output.
+Debug: F (gamepad Back) toggles a free-fly camera (Space up, Ctrl or C or gamepad B down, Shift fast). F5 reloads with a new random island seed and prints it to the output. T (gamepad D-pad right) jumps the clock forward one hour.
+
+## Day and night
+
+One in-game day lasts 20 real minutes; the game starts at 08:00 on day 1 and the clock shows top right. `WorldClock` (an autoload) holds the time and is the one place every system reads it from; later the server owns it and sends it to clients.
+
+The look lives in `world/day_night.tres`: select it in the FileSystem dock and the inspector shows gradients for sun, sky and fog color and curves for ambient light and fog thickness, all running from midnight (left) through noon (middle) to midnight (right). Edit them, then play and press T to step through the day an hour at a time.
 
 Dig and fill run through `World.request_terrain_edit()` and the `Permissions.can()` gate, the same path a networked client will use. Local dig/fill works now.
 
@@ -52,6 +58,6 @@ godot --headless --path . --script res://tools/survey_seeds.gd -- --maps=/tmp/ma
 - [ ] Dig and fill terrain, synced between a host and one client
 - [ ] Place and remove 3 build pieces on a grid, synced
 - [x] `can()` permission gate stub with Owner and Visitor roles
-- [ ] Day/night cycle
+- [x] Day/night cycle: 20 minute day, moving sun and moon, sky, ambient light and fog that change over the day, morning and evening sea haze
 
 Goal: a networked gray box with two players digging and building together, no art. If that isn't fun, nothing later will fix it.
