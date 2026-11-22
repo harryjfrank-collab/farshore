@@ -1,0 +1,390 @@
+[gd_resource type="VoxelGeneratorGraph" format=3]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tkw2w"]
+frequency = 0.0009
+fractal_octaves = 4
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_mh4ny"]
+frequency = 0.006
+fractal_octaves = 2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_o6hpg"]
+frequency = 0.03
+fractal_octaves = 2
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1nnut"]
+frequency = 0.004
+fractal_octaves = 4
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6ll6f"]
+frequency = 0.0035
+fractal_type = 2
+
+[sub_resource type="Curve" id="Curve_t3h6g"]
+_data = [Vector2(0, 0), 0.0, 0.45, 0, 0, Vector2(0.09, 0.045), 0.45, 0.6, 0, 0, Vector2(0.4, 0.28), 0.8, 0.8, 0, 0, Vector2(1, 0.75), 0.6, 0.0, 0, 0]
+point_count = 4
+
+[resource]
+graph_data = {
+"connections": [[56, 0, 57, 0], [55, 0, 56, 1], [54, 0, 55, 0], [53, 0, 54, 0], [52, 0, 55, 1], [51, 0, 52, 0], [50, 0, 51, 0], [49, 0, 54, 1], [48, 0, 49, 0], [47, 0, 48, 0], [46, 0, 53, 1], [45, 0, 46, 0], [44, 0, 46, 1], [43, 0, 44, 1], [42, 0, 44, 0], [41, 0, 45, 0], [40, 0, 52, 1], [39, 0, 40, 0], [38, 0, 39, 0], [37, 0, 43, 1], [37, 0, 49, 1], [36, 0, 37, 0], [35, 0, 36, 0], [34, 0, 53, 0], [33, 0, 34, 1], [32, 0, 33, 0], [31, 0, 32, 0], [30, 0, 34, 0], [13, 0, 45, 1], [12, 0, 33, 1], [11, 0, 32, 1], [10, 0, 30, 1], [9, 0, 36, 1], [9, 0, 39, 1], [8, 0, 38, 1], [7, 0, 35, 1], [6, 0, 26, 1], [5, 0, 24, 1], [4, 0, 22, 1], [3, 0, 56, 0], [2, 0, 16, 1], [2, 0, 17, 1], [2, 0, 18, 1], [2, 0, 19, 1], [2, 0, 20, 1], [2, 0, 21, 3], [1, 0, 16, 0], [1, 0, 17, 0], [1, 0, 18, 0], [1, 0, 19, 0], [1, 0, 20, 0], [1, 0, 21, 2], [14, 0, 48, 1], [15, 0, 51, 1], [16, 0, 24, 0], [17, 0, 26, 0], [18, 0, 41, 0], [19, 0, 47, 0], [20, 0, 50, 0], [21, 0, 22, 0], [22, 0, 23, 1], [23, 0, 25, 0], [24, 0, 25, 1], [25, 0, 27, 0], [25, 0, 28, 0], [25, 0, 31, 0], [25, 0, 42, 0], [26, 0, 27, 1], [27, 0, 35, 0], [27, 0, 38, 0], [28, 0, 29, 0], [29, 0, 30, 0]],
+"nodes": {
+"1": {
+"auto_connect": false,
+"gui_position": Vector2(0, 0),
+"type": "InputX"
+},
+"10": {
+"auto_connect": false,
+"gui_position": Vector2(0, 960),
+"name": &"PeakHeight",
+"type": "Constant",
+"value": 90.0
+},
+"11": {
+"auto_connect": false,
+"gui_position": Vector2(0, 1080),
+"name": &"SeabedDrop",
+"type": "Constant",
+"value": 150.0
+},
+"12": {
+"auto_connect": false,
+"gui_position": Vector2(0, 1200),
+"name": &"SeabedFloor",
+"type": "Constant",
+"value": -40.0
+},
+"13": {
+"auto_connect": false,
+"gui_position": Vector2(880, 960),
+"name": &"DuneHeight",
+"type": "Constant",
+"value": 1.6
+},
+"14": {
+"auto_connect": false,
+"gui_position": Vector2(880, 1080),
+"name": &"RollingHeight",
+"type": "Constant",
+"value": 6.0
+},
+"15": {
+"auto_connect": false,
+"gui_position": Vector2(880, 1200),
+"name": &"HighlandHeight",
+"type": "Constant",
+"value": 55.0
+},
+"16": {
+"auto_connect": true,
+"gui_position": Vector2(220, 120),
+"name": &"CoastNoise",
+"noise": SubResource("FastNoiseLite_tkw2w"),
+"type": "Noise2D"
+},
+"17": {
+"auto_connect": true,
+"gui_position": Vector2(220, 360),
+"name": &"BiomeEdgeNoise",
+"noise": SubResource("FastNoiseLite_mh4ny"),
+"type": "Noise2D"
+},
+"18": {
+"auto_connect": true,
+"gui_position": Vector2(220, 600),
+"name": &"DuneNoise",
+"noise": SubResource("FastNoiseLite_o6hpg"),
+"type": "Noise2D"
+},
+"19": {
+"auto_connect": true,
+"gui_position": Vector2(220, 840),
+"name": &"HillNoise",
+"noise": SubResource("FastNoiseLite_1nnut"),
+"type": "Noise2D"
+},
+"2": {
+"auto_connect": false,
+"gui_position": Vector2(0, 120),
+"type": "InputZ"
+},
+"20": {
+"auto_connect": true,
+"gui_position": Vector2(220, 1080),
+"name": &"HighlandNoise",
+"noise": SubResource("FastNoiseLite_6ll6f"),
+"type": "Noise2D"
+},
+"21": {
+"auto_connect": true,
+"gui_position": Vector2(220, 0),
+"name": &"DistanceFromCenter",
+"type": "Distance2D",
+"x0": 0.0,
+"y0": 0.0
+},
+"22": {
+"auto_connect": false,
+"gui_position": Vector2(440, 0),
+"type": "Divide"
+},
+"23": {
+"a": 1.0,
+"auto_connect": false,
+"gui_position": Vector2(660, 0),
+"type": "Subtract"
+},
+"24": {
+"auto_connect": false,
+"gui_position": Vector2(440, 120),
+"type": "Multiply"
+},
+"25": {
+"auto_connect": false,
+"gui_position": Vector2(880, 0),
+"name": &"Inland",
+"type": "Add"
+},
+"26": {
+"auto_connect": false,
+"gui_position": Vector2(440, 360),
+"type": "Multiply"
+},
+"27": {
+"auto_connect": false,
+"gui_position": Vector2(1100, 240),
+"name": &"BiomeBand",
+"type": "Add"
+},
+"28": {
+"auto_connect": false,
+"gui_position": Vector2(1100, 0),
+"max": 1.0,
+"min": 0.0,
+"type": "Clamp"
+},
+"29": {
+"auto_connect": false,
+"curve": SubResource("Curve_t3h6g"),
+"gui_position": Vector2(1320, 0),
+"name": &"CoastProfile",
+"type": "Curve"
+},
+"3": {
+"auto_connect": false,
+"gui_position": Vector2(0, 1440),
+"type": "InputY"
+},
+"30": {
+"auto_connect": false,
+"gui_position": Vector2(1540, 0),
+"type": "Multiply"
+},
+"31": {
+"auto_connect": false,
+"b": 0.0,
+"gui_position": Vector2(1100, 120),
+"type": "Min"
+},
+"32": {
+"auto_connect": false,
+"gui_position": Vector2(1320, 120),
+"type": "Multiply"
+},
+"33": {
+"auto_connect": false,
+"gui_position": Vector2(1540, 120),
+"type": "Max"
+},
+"34": {
+"auto_connect": false,
+"gui_position": Vector2(1760, 0),
+"name": &"BaseHeight",
+"type": "Add"
+},
+"35": {
+"auto_connect": false,
+"gui_position": Vector2(1320, 360),
+"type": "Subtract"
+},
+"36": {
+"auto_connect": false,
+"gui_position": Vector2(1540, 360),
+"type": "Divide"
+},
+"37": {
+"auto_connect": false,
+"edge0": 0.0,
+"edge1": 1.0,
+"gui_position": Vector2(1760, 360),
+"name": &"GreenwoodMask",
+"type": "Smoothstep"
+},
+"38": {
+"auto_connect": false,
+"gui_position": Vector2(1320, 600),
+"type": "Subtract"
+},
+"39": {
+"auto_connect": false,
+"gui_position": Vector2(1540, 600),
+"type": "Divide"
+},
+"4": {
+"auto_connect": false,
+"gui_position": Vector2(0, 240),
+"name": &"IslandRadius",
+"type": "Constant",
+"value": 1000.0
+},
+"40": {
+"auto_connect": false,
+"edge0": 0.0,
+"edge1": 1.0,
+"gui_position": Vector2(1760, 600),
+"name": &"OldInteriorMask",
+"type": "Smoothstep"
+},
+"41": {
+"auto_connect": false,
+"gui_position": Vector2(440, 600),
+"max0": 1.0,
+"max1": 1.0,
+"min0": -1.0,
+"min1": 0.0,
+"type": "Remap"
+},
+"42": {
+"auto_connect": false,
+"edge0": 0.02,
+"edge1": 0.07,
+"gui_position": Vector2(1100, 840),
+"type": "Smoothstep"
+},
+"43": {
+"a": 1.0,
+"auto_connect": false,
+"gui_position": Vector2(1980, 360),
+"type": "Subtract"
+},
+"44": {
+"auto_connect": false,
+"gui_position": Vector2(2200, 360),
+"name": &"DuneMask",
+"type": "Multiply"
+},
+"45": {
+"auto_connect": false,
+"gui_position": Vector2(1100, 960),
+"type": "Multiply"
+},
+"46": {
+"auto_connect": false,
+"gui_position": Vector2(2420, 480),
+"name": &"Dunes",
+"type": "Multiply"
+},
+"47": {
+"auto_connect": false,
+"gui_position": Vector2(440, 840),
+"max0": 1.0,
+"max1": 1.0,
+"min0": -1.0,
+"min1": -0.3,
+"type": "Remap"
+},
+"48": {
+"auto_connect": false,
+"gui_position": Vector2(1100, 1080),
+"type": "Multiply"
+},
+"49": {
+"auto_connect": false,
+"gui_position": Vector2(2420, 600),
+"name": &"Rolling",
+"type": "Multiply"
+},
+"5": {
+"auto_connect": false,
+"gui_position": Vector2(0, 360),
+"name": &"CoastWarp",
+"type": "Constant",
+"value": 0.5
+},
+"50": {
+"auto_connect": false,
+"gui_position": Vector2(440, 1080),
+"max0": 1.0,
+"max1": 1.0,
+"min0": -1.0,
+"min1": 0.0,
+"type": "Remap"
+},
+"51": {
+"auto_connect": false,
+"gui_position": Vector2(1100, 1200),
+"type": "Multiply"
+},
+"52": {
+"auto_connect": false,
+"gui_position": Vector2(2420, 720),
+"name": &"Highlands",
+"type": "Multiply"
+},
+"53": {
+"auto_connect": false,
+"gui_position": Vector2(2640, 120),
+"type": "Add"
+},
+"54": {
+"auto_connect": false,
+"gui_position": Vector2(2860, 240),
+"type": "Add"
+},
+"55": {
+"auto_connect": false,
+"gui_position": Vector2(3080, 360),
+"name": &"Height",
+"type": "Add"
+},
+"56": {
+"auto_connect": false,
+"gui_position": Vector2(3300, 480),
+"type": "Subtract"
+},
+"57": {
+"auto_connect": true,
+"gui_position": Vector2(3520, 480),
+"type": "OutputSDF"
+},
+"6": {
+"auto_connect": false,
+"gui_position": Vector2(0, 480),
+"name": &"EdgeJitter",
+"type": "Constant",
+"value": 0.05
+},
+"7": {
+"auto_connect": false,
+"gui_position": Vector2(0, 600),
+"name": &"ShoreEnd",
+"type": "Constant",
+"value": 0.09
+},
+"8": {
+"auto_connect": false,
+"gui_position": Vector2(0, 720),
+"name": &"GreenwoodEnd",
+"type": "Constant",
+"value": 0.4
+},
+"9": {
+"auto_connect": false,
+"gui_position": Vector2(0, 840),
+"name": &"BiomeFade",
+"type": "Constant",
+"value": 0.06
+}
+},
+"version": 2
+}
