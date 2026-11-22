@@ -13,6 +13,7 @@ run/main_scene="res://scenes/main.tscn"
 
 InputSetup="*res://scripts/autoload/input_setup.gd"
 Permissions="*res://scripts/autoload/permissions.gd"
+WorldClock="*res://scripts/autoload/world_clock.gd"
 
 [rendering]
 
