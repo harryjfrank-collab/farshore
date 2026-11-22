@@ -183,7 +183,7 @@ Open questions.
 
 - [ ] World concept: go with Regrowth + Hearths, or another premise?
 - [ ] Server size target: 2–8 friends, or up to 16 on dedicated servers?
-- [ ] Finite worlds (for example 4 × 4 km) or endless? Finite is far easier to save, sync and roll back.
+- [x] Finite worlds (for example 4 × 4 km) or endless? Finite is far easier to save, sync and roll back. Decided Nov 22, 2026: finite, an island of roughly 2 × 2 km bounded by sea. See [World generation](world-generation.md).
 - [ ] First-person, third-person, or both from day one?
 - [ ] Working title.
 - [ ] Price and model: one-time purchase assumed; no microtransactions.
